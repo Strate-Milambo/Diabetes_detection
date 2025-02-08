@@ -11,8 +11,8 @@ scaling = pk.load(open(path_scale,'rb'))
 
 
 def prediction(Preg,glu,bloodp,	SkinThick,Insulin,BMI,DiabetesPF,Age):
-    dt_class=['Non diabétique', 'Diabétique']
-    emoji = ['🤗😊','😔😓']
+    # dt_class=['Non diabétique', 'Diabétique']
+    # emoji = ['🤗😊','😔😓']
     input=scaling.transform([[Preg,glu,bloodp,	SkinThick,Insulin,BMI,DiabetesPF,Age]])
     input_shaped=np.reshape(input,(1,-1))
     value=model.predict(input_shaped)
@@ -42,7 +42,7 @@ st.markdown("""
             border-radius: 10px;
         }
         body {
-            background-image: url('2001.jpg');
+            background-image: url('output.jpg');
             background-size: cover;
         }
     </style>
@@ -66,7 +66,7 @@ st.sidebar.markdown("""
 def main():
     st.markdown(
         """
-        <h1 style="text-align:center; color: white; background-color: teal; padding: 15px; border-radius: 10px;">
+        <h1 style="text-align:center; color: white; background-color:#87CEEB; padding: 15px; border-radius: 10px;">
             🩺 Système de Prédiction du Diabète
         </h1>
         """, unsafe_allow_html=True
@@ -97,12 +97,15 @@ def main():
         pedigree = st.slider("DiabetesPedigreeFunction", 0.0, 2.5, 0.5)
         age = st.slider("Âge", 1, 120, 30)
 
-    if st.button("Prédire le diabète"):
-        input_data = pd.DataFrame([[grossesses, glucose, tension, peau, insuline, imc, pedigree, age]],
-                                  columns=["Grossesses", "Glucose", "Tension artérielle", "Épaisseur de la peau", 
-                                           "Insuline", "IMC", "DiabetesPedigreeFunction", "Âge"])
-        result = prediction(grossesses, glucose, tension, peau, insuline, imc, pedigree, age)
-        st.success(f"Résultat c'est une : {'Diabétique' if result == 1 else 'Non diabétique'}")
-
+    if st.button("Prédire le diabète", key='predict'):
+    
+        result= prediction(grossesses, glucose, tension, peau, insuline, imc, pedigree, age)
+        st.markdown(
+            f"""
+            <div class='main-container' style='background-color: {"#ff4d4d" if result == 1 else "#4CAF50"}; color: white;'>
+                <h3>Résultat, C'est une : {'Diabétique' if result == 1 else 'Non diabétique'}</h3>
+            </div>
+            """, unsafe_allow_html=True
+        )
 if __name__ == "__main__":
     main()
