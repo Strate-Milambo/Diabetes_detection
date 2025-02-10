@@ -11,8 +11,6 @@ scaling = pk.load(open(path_scale,'rb'))
 
 
 def prediction(Preg,glu,bloodp,	SkinThick,Insulin,BMI,DiabetesPF,Age):
-    # dt_class=['Non diabétique', 'Diabétique']
-    # emoji = ['🤗😊','😔😓']
     input=scaling.transform([[Preg,glu,bloodp,	SkinThick,Insulin,BMI,DiabetesPF,Age]])
     input_shaped=np.reshape(input,(1,-1))
     value=model.predict(input_shaped)
@@ -67,7 +65,7 @@ def main():
     st.markdown(
         """
         <h1 style="text-align:center; color: white; background-color:#87CEEB; padding: 15px; border-radius: 10px;">
-            🩺 Système de Prédiction du Diabète
+            🩺 Système de Prédiction du Diabète chez Les femmes
         </h1>
         """, unsafe_allow_html=True
     )
@@ -85,11 +83,11 @@ def main():
     
     with col1:
         grossesses = st.number_input("Grossesses", 0, 20, 1)
-        glucose = st.slider("Glucose", 0, 200, 100)
-        tension = st.slider("Tension artérielle", 0, 130, 70)
+        glucose = st.slider("Glucose", 0, 300, 100)
+        tension = st.slider("Tension artérielle", 0, 150, 70)
     
     with col2:
-        peau = st.slider("Épaisseur de la peau", 0, 100, 20)
+        peau = st.slider("Épaisseur de la peau", 0, 150, 20)
         insuline = st.slider("Insuline", 0, 900, 79)
         imc = st.slider("IMC", 0.0, 70.0, 25.0)
         
@@ -98,7 +96,11 @@ def main():
         age = st.slider("Âge", 1, 120, 30)
 
     if st.button("Prédire le diabète", key='predict'):
-    
+        input_data = pd.DataFrame([[grossesses, glucose, tension, peau, insuline, imc, pedigree, age]],
+                                  columns=["Grossesses", "Glucose", "Tension artérielle", "Épaisseur de la peau", 
+                                           "Insuline", "IMC", "DiabetesPedigreeFunction", "Âge"])
+        st.text("Tableau récapitilatif sur les différentes entrées")
+        input_data
         result= prediction(grossesses, glucose, tension, peau, insuline, imc, pedigree, age)
         st.markdown(
             f"""
